@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-
 public class LibraryActivity extends Activity {
 
     public EditText inputParameter;
@@ -16,6 +15,7 @@ public class LibraryActivity extends Activity {
         setContentView(R.layout.activity_library);
 
         inputParameter = (EditText) findViewById(R.id.input_parameter);
+
     }
 
     public void checkOut(int memberId, int bookId) {
@@ -52,5 +52,8 @@ public class LibraryActivity extends Activity {
         //      currently has checked out, ordered by due date, with the
         //      earliest due first.
     }
+
+
+
 
 }

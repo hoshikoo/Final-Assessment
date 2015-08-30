@@ -1,10 +1,17 @@
 package nyc.c4q;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class ListActivity extends Activity {
@@ -42,12 +49,43 @@ public class ListActivity extends Activity {
         new Person("Ron",       "Weasley",         House.Gryffindor)
     };
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
         list = (ListView) findViewById(R.id.list);
+
+        ArrayList<Person> personList = new ArrayList<Person>(Arrays.asList(PEOPLE));
+
+        PersonAdapter itemsAdapter =
+                new PersonAdapter (this, personList);
+
+        list.setAdapter(itemsAdapter);
+    }
+
+    public class PersonAdapter extends ArrayAdapter <Person> {
+
+        public PersonAdapter (Context context, ArrayList<Person> users) {
+            super(context, 0, users);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // Get the data item for this position
+            Person person = getItem(position);
+            // Check if an existing view is being reused, otherwise inflate the view
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_member, parent, false);
+            }
+            TextView tvName = (TextView) convertView.findViewById(R.id.text_name);
+            tvName.setText(person.getFirstName());
+
+            return convertView;
+        }
     }
 
 }
