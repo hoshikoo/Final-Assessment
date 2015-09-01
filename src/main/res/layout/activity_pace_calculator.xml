@@ -6,54 +6,11 @@
     android:layout_height="match_parent"
     tools:context="nyc.c4q.PaceCalculatorActivity"
     >
-<LinearLayout
-android:layout_width="match_parent"
-android:layout_height="match_parent">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="distance"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/input_distance"
-        android:hint="distance"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="time"/>
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/input_time_min"
-        android:hint="time min"/>
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/input_time_sec"
-        android:hint="time sec"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/container"></LinearLayout>
 
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/input_pace_min"
-        android:hint="pace min"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/input_pace_sec"
-        android:hint="pace sec"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_calculate"
-        android:text="calculate"/>
-
-</LinearLayout>
     </FrameLayout>

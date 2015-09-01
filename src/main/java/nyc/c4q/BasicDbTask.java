@@ -11,10 +11,11 @@ import java.util.List;
 public class BasicDbTask extends AsyncTask<Void, Void, Void>
 {
     public List<Book> books;
-
+    int position;
 
     @Override
     protected Void doInBackground(Void... params) {
+        books.get(position);
         return null;
     }
 }

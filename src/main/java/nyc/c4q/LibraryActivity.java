@@ -16,6 +16,8 @@ public class LibraryActivity extends Activity {
 
         inputParameter = (EditText) findViewById(R.id.input_parameter);
 
+        getBookJsonData();
+
     }
 
     public void checkOut(int memberId, int bookId) {
@@ -51,6 +53,10 @@ public class LibraryActivity extends Activity {
         // TODO Display a list of books that the member with the given name
         //      currently has checked out, ordered by due date, with the
         //      earliest due first.
+    }
+
+    public void getBookJsonData(){
+        nyc.c4q.models.Book mockData = MockData.getMockData(this);
     }
 
 

@@ -1,8 +1,8 @@
 package nyc.c4q;
 
 public class Person {
-    public static String firstName;
-    public static String lastName;
+    public String firstName;
+    public String lastName;
     public House house;
 
     public Person(String firstName, String lastName, House house) {
@@ -13,7 +13,7 @@ public class Person {
 
 
 
-    public static String getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
@@ -21,7 +21,7 @@ public class Person {
         this.firstName = firstName;
     }
 
-    public static String getLastName() {
+    public String getLastName() {
         return lastName;
     }
 

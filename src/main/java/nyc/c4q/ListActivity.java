@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 
 public class ListActivity extends Activity {
@@ -51,26 +53,103 @@ public class ListActivity extends Activity {
 
 
 
-
+    int sortType = 0;
+    boolean showColor = false;
+    PersonAdapter personAdapter = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
         list = (ListView) findViewById(R.id.list);
+        final Button nameSortButton = (Button)findViewById(R.id.button_name);
+
+
+        nameSortButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String label = ((Button) v).getText().toString();
+
+                if (label.equals("Last, First")){
+                    sortType = 1;
+                    ((Button) v).setText("First Last");
+
+                } else{
+                    sortType = 0;
+                    ((Button) v).setText("Last, First");
+                }
+
+                personAdapter.setSortType(sortType);
+            }
+        });
+
+        Button colorButton = (Button)findViewById(R.id.button_color);
+        colorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String colorLabel = ((Button) v).getText().toString();
+
+                if(colorLabel.equals(getResources().getString(R.string.show_color))){
+                    showColor = true;
+                    ((Button) v).setText(getResources().getString(R.string.hide_color));
+                } else{
+                    showColor = false;
+                    ((Button) v).setText(getResources().getString(R.string.show_color));
+                }
+
+                personAdapter.setShowColors(showColor);
+            }
+        });
 
         ArrayList<Person> personList = new ArrayList<Person>(Arrays.asList(PEOPLE));
 
-        PersonAdapter itemsAdapter =
-                new PersonAdapter (this, personList);
+       personAdapter =
+                new PersonAdapter (this, personList, sortType);
 
-        list.setAdapter(itemsAdapter);
+        list.setAdapter(personAdapter);
+
+
     }
 
     public class PersonAdapter extends ArrayAdapter <Person> {
 
-        public PersonAdapter (Context context, ArrayList<Person> users) {
+        private int sortType = 0;
+        private boolean showColor = false;
+
+        public void setSortType(int sortType){
+            this.sortType = sortType;
+            if (sortType == 0){
+                sort(new Comparator<Person>() {
+                    @Override
+                    public int compare(Person lhs, Person rhs) {
+                        return (lhs.getLastName() + ", " + lhs.getFirstName()).compareTo(rhs.getLastName() + ", "+ rhs.getFirstName());
+                    }
+                });
+            }else if (sortType == 1){
+
+                sort(new Comparator<Person>() {
+                    @Override
+                    public int compare(Person lhs, Person rhs) {
+                        return (lhs.getFirstName() + " " + lhs.getLastName()).compareTo(rhs.getFirstName() + " " + rhs.getLastName());
+
+                    }
+                });
+
+            }
+
+            notifyDataSetChanged();
+        }
+
+        public void setShowColors(boolean showColor){
+            this.showColor = showColor;
+            notifyDataSetChanged();
+
+        }
+
+        public PersonAdapter (Context context, ArrayList<Person> users, int sortType) {
             super(context, 0, users);
+            setSortType(sortType);
         }
 
         @Override
@@ -82,7 +161,30 @@ public class ListActivity extends Activity {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.listitem_member, parent, false);
             }
             TextView tvName = (TextView) convertView.findViewById(R.id.text_name);
-            tvName.setText(person.getFirstName());
+            TextView tvHouse = (TextView) convertView.findViewById(R.id.text_house);
+            if(sortType == 1) {
+                tvName.setText(person.getFirstName() + " " + person.getLastName());
+            } else {
+                tvName.setText(person.getLastName() + ", " + person.getFirstName());
+            }
+            House house = person.getHouse();
+            tvHouse.setText(house.name());
+            int color = 0;
+            if(showColor){
+
+                if(house.name().equals("Gryffindor")) {
+                    color = getResources().getColor(R.color.gryffindor_red);
+                } else if(house.name().equals("Ravenclaw")) {
+                    color = getResources().getColor(R.color.ravenclaw_blue);
+                } else if(house.name().equals("Hufflepuff")) {
+                    color = getResources().getColor(R.color.hufflepuff_yellow);
+                }else if(house.name().equals("Slytherin")) {
+                    color = getResources().getColor(R.color.slytherin_green);
+                }
+
+            }
+
+            convertView.setBackgroundColor(color);
 
             return convertView;
         }
