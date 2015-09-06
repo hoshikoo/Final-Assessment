@@ -1,21 +1,53 @@
 package nyc.c4q.models;
 
+import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Hoshiko on 8/30/15.
  */
+@DatabaseTable(tableName = "members")
 public class Member {
-
+    @DatabaseField
     private Integer id;
+
+    @DatabaseField
     private String name;
+
+    @SerializedName("dob_month")
+    @DatabaseField
     private Integer dobMonth;
+
+    @SerializedName("dob_day")
+    @DatabaseField
     private Integer dobDay;
+
+    @SerializedName("dob_year")
+    @DatabaseField
     private Integer dobYear;
+
+    @DatabaseField
     private String city;
+
+    @DatabaseField
     private String state;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    Member (){}
+
+    public Member(int id, String name, int dobMonth, int dobDay, int dobYear, String city, String state) {
+        this.id = id;
+        this.name = name;
+        this.dobMonth = dobMonth;
+        this.dobDay = dobDay;
+        this.dobYear = dobYear;
+        this.city = city;
+        this.state = state;
+    }
 
     /**
      *

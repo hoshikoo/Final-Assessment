@@ -2,6 +2,7 @@ package nyc.c4q;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,28 +56,42 @@ public class ListActivity extends Activity {
 
     int sortType = 0;
     boolean showColor = false;
+
     PersonAdapter personAdapter = null;
+    SharedPreferences prefs;
+
+    Context mContext;
+
+    private  static final String SHOW_COLOR = "showColor";
+    private  static final String SORT_TYPE = "sortType";
+    private  static final String LIST_UI = "ListUI";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        prefs = getApplicationContext().getSharedPreferences(LIST_UI, Context.MODE_PRIVATE);
+        showColor = prefs.getBoolean(SHOW_COLOR, false);
+        sortType = prefs.getInt(SORT_TYPE, 0);
+
+
         list = (ListView) findViewById(R.id.list);
         final Button nameSortButton = (Button)findViewById(R.id.button_name);
-
 
         nameSortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String label = ((Button) v).getText().toString();
 
-                if (label.equals("Last, First")){
+                if (label.equals("Last, First")) {
                     sortType = 1;
                     ((Button) v).setText("First Last");
 
-                } else{
+                } else {
                     sortType = 0;
                     ((Button) v).setText("Last, First");
+
                 }
 
                 personAdapter.setSortType(sortType);
@@ -84,6 +99,7 @@ public class ListActivity extends Activity {
         });
 
         Button colorButton = (Button)findViewById(R.id.button_color);
+
         colorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,9 +109,11 @@ public class ListActivity extends Activity {
                 if(colorLabel.equals(getResources().getString(R.string.show_color))){
                     showColor = true;
                     ((Button) v).setText(getResources().getString(R.string.hide_color));
+
                 } else{
                     showColor = false;
                     ((Button) v).setText(getResources().getString(R.string.show_color));
+
                 }
 
                 personAdapter.setShowColors(showColor);
@@ -108,7 +126,6 @@ public class ListActivity extends Activity {
                 new PersonAdapter (this, personList, sortType);
 
         list.setAdapter(personAdapter);
-
 
     }
 
@@ -189,5 +206,34 @@ public class ListActivity extends Activity {
             return convertView;
         }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+//        savedInstanceState.putBoolean("showColor", showColor);
+//
+//        savedInstanceState.putInt("sortType", sortType);
+//
+//        prefs = getApplicationContext().getSharedPreferences(LIST_UI, MODE_PRIVATE);
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.putBoolean(SHOW_COLOR, showColor);
+//        editor.putInt(SORT_TYPE, sortType);
+//        editor.commit();
+
+    }
+
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        prefs = getApplicationContext().getSharedPreferences(LIST_UI, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.putBoolean(SHOW_COLOR, showColor);
+        editor.putInt(SORT_TYPE, sortType);
+        editor.commit();
+    }
+
 
 }

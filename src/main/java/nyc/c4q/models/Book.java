@@ -1,29 +1,95 @@
 package nyc.c4q.models;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Hoshiko on 8/30/15.
  */
+
+@DatabaseTable(tableName = "books")
 public class Book {
+    @DatabaseField
     private Integer id;
+
+    @DatabaseField
     private String title;
+
+    @DatabaseField
     private String author;
+
+    @DatabaseField
     private String isbn;
+
+    @DatabaseField
     private String isbn13;
+
+    @DatabaseField
     private String publisher;
+
+    @DatabaseField
     private Integer publishyear;
+
+    @DatabaseField
     private Boolean checkedout;
+
+    @DatabaseField
     private Integer checkedoutby;
+
+    @DatabaseField
     private Integer checkoutdateyear;
+
+    @DatabaseField
     private Integer checkoutdatemonth;
+
+    @DatabaseField
     private Integer checkoutdateday;
+
+    @DatabaseField
     private Integer duedateyear;
+
+    @DatabaseField
     private Integer duedatemonth;
+
+    @DatabaseField
     private Integer duedateday;
+
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+
+    public Book(Integer id, String title, String author, String isbn, String isbn13, String publisher, Integer publishyear, Boolean checkedout, Integer checkedoutby, Integer checkoutdateyear, Integer checkoutdatemonth, Integer checkoutdateday, Integer duedateyear, Integer duedatemonth, Integer duedateday) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.isbn13 = isbn13;
+        this.publisher = publisher;
+        this.publishyear = publishyear;
+        this.checkedout = checkedout;
+        this.checkedoutby = checkedoutby;
+        this.checkoutdateyear = checkoutdateyear;
+        this.checkoutdatemonth = checkoutdatemonth;
+        this.checkoutdateday = checkoutdateday;
+        this.duedateyear = duedateyear;
+        this.duedatemonth = duedatemonth;
+        this.duedateday = duedateday;
+    }
+
+    public Book(Integer id, String title, String author, String isbn, String isbn13, String publisher, Integer publishyear) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.isbn13 = isbn13;
+        this.publisher = publisher;
+        this.publishyear = publishyear;
+
+    }
+
+    Book (){}
     /**
      *
      * @return
