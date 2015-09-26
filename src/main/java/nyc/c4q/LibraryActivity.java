@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import nyc.c4q.models.Book;
@@ -20,6 +22,7 @@ public class LibraryActivity extends Activity {
     List <Member> allMembers;
     List <Book> allBooks;
     MySQLiteOpenHelper helper;
+    String memberName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class LibraryActivity extends Activity {
                     int checkoutdateday = book.getCheckoutdateday();
                     int duedateyear = book.getDuedateyear();
                     int duedatemonth = book.getDuedatemonth();
-                    int duedateday = book.getCheckoutdateday();
+                    int duedateday = book.getDuedateday();
 
                     helper.insertBookCheckedOutData(id, title, author, isbn, isbn13, publisher, publishyear, checkedout,
                             checkedoutby, checkoutdateyear, checkoutdatemonth, checkoutdateday, duedateyear, duedatemonth, duedateday);
@@ -135,11 +138,13 @@ public class LibraryActivity extends Activity {
     }
 
     public void button_getCheckedOut_onClick(View view) {
-        String name = inputParameter.getText().toString();
+        memberName = inputParameter.getText().toString();
 
         // TODO Display a list of books that the member with the given name
         //      currently has checked out, ordered by due date, with the
         //      earliest due first.
+
+        new BookCheckOutTask().execute(memberName);
     }
 
 
@@ -216,6 +221,87 @@ public class LibraryActivity extends Activity {
                 TextView textView = (TextView) findViewById(R.id.text_display);
                 textView.setText(result);
 
+        }
+    }
+
+
+    private class BookCheckOutTask extends AsyncTask <String, Void, ArrayList <Book>>{
+        ArrayList<Book> books;
+
+
+
+        @Override
+        protected ArrayList<Book> doInBackground(String... memberNames) {
+            try {
+                books = (ArrayList<Book>) helper.loadCheckedOutBooks(memberNames[0]);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return books;
+        }
+
+        private String getFormattedDueDate(Book book) {
+
+            int dueMonth = Integer.valueOf(String.valueOf(book.getDuedatemonth()));
+            int dueDate = Integer.valueOf(String.valueOf(book.getDuedateday()));
+            int dueYear = Integer.valueOf(String.valueOf(book.getDuedateyear()));
+
+            return String.format("%04d%02d%02d", dueYear, dueMonth,dueDate);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Book> books) {
+            String bookResult = "";
+            Collections.sort(books,new Comparator<Book>(){
+                @Override
+                public int compare(Book lhs, Book rhs) {
+
+                    String lhsDueDate = getFormattedDueDate(lhs);
+                    String rhsDueDate = getFormattedDueDate(rhs);
+
+
+                    return lhsDueDate.compareTo(rhsDueDate);
+
+                }
+
+            });
+
+            for (int i = 0; i<books.size(); i++){
+
+                Book book = books.get(i);
+
+                int id = book.getId();
+                String title = book.getTitle();
+                String author =  book.getAuthor();
+                int checkedoutDateYear = book.getCheckoutdateyear();
+                int checkedoutDateMonth = book.getCheckoutdatemonth();
+                int checkedoutDateDay = book.getCheckoutdateday();
+                int duedateYear = book.getDuedateyear();
+                int duedateMonth = book.getDuedatemonth();
+                int duedateDay = book.getDuedateday();
+
+                String checkeoutDate = String.valueOf(checkedoutDateMonth) + "/" +
+                        String.valueOf(checkedoutDateDay)+ "/" + String.valueOf(checkedoutDateYear);
+
+                String dueDate = String.valueOf(duedateMonth) + "/" +
+                        String.valueOf(duedateDay)+ "/" + String.valueOf(duedateYear);
+
+                bookResult = bookResult +
+                "\n-----\n" +
+                "title: " + title + "\n" +
+                "author: " + author + "\n" +
+                "checkout date: " + checkeoutDate + "\n" +
+                "due date: " + dueDate;
+
+            }
+
+
+            String result = "name: " + String.valueOf(memberName)  + bookResult;
+
+            TextView textView = (TextView) findViewById(R.id.text_display);
+            textView.setText(result);
         }
     }
 }

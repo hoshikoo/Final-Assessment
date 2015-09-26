@@ -368,4 +368,5 @@ public class Book {
         this.additionalProperties.put(name, value);
     }
 
+
 }

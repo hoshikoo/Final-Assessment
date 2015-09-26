@@ -55,7 +55,7 @@ public class ListActivity extends Activity {
 
 
     int sortType = 0;
-    boolean showColor = false;
+    boolean showColor;
 
     PersonAdapter personAdapter = null;
     SharedPreferences prefs;
@@ -117,13 +117,19 @@ public class ListActivity extends Activity {
                 }
 
                 personAdapter.setShowColors(showColor);
+
+                prefs = getApplicationContext().getSharedPreferences(LIST_UI, MODE_PRIVATE);
+
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean(SHOW_COLOR, showColor);
+                editor.commit();
             }
         });
 
         ArrayList<Person> personList = new ArrayList<Person>(Arrays.asList(PEOPLE));
 
        personAdapter =
-                new PersonAdapter (this, personList, sortType);
+                new PersonAdapter (this, personList, sortType, showColor);
 
         list.setAdapter(personAdapter);
 
@@ -164,9 +170,10 @@ public class ListActivity extends Activity {
 
         }
 
-        public PersonAdapter (Context context, ArrayList<Person> users, int sortType) {
+        public PersonAdapter(Context context, ArrayList<Person> users, int sortType, boolean showColor) {
             super(context, 0, users);
             setSortType(sortType);
+            setShowColors(showColor);
         }
 
         @Override

@@ -64,21 +64,15 @@ public class MySQLiteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db,ConnectionSource connectionSource, int oldVersion, int newVersion) {
-//        try {
-//            List<String> allSql = new ArrayList<String>();
-//            switch(oldVersion)
-//            {
-//                case 1:
-//                    //allSql.add("alter table AdData add column `new_col` VARCHAR");
-//                    //allSql.add("alter table AdData add column `new_col2` VARCHAR");
-//            }
-//            for (String sql : allSql) {
-//                db.execSQL(sql);
-//            }
-//        } catch (SQLException e) {
-//            Log.e(DatabaseHelper.class.getName(), "exception during onUpgrade", e);
-//            throw new RuntimeException(e);
-//        }
+
+        try {
+            TableUtils.dropTable(connectionSource, Member.class, false);
+            TableUtils.dropTable(connectionSource, Book.class, false);
+
+        }catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        onCreate(db, connectionSource);
 
     }
 
@@ -167,6 +161,14 @@ public class MySQLiteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     public List <Book> loadAllBook () throws java.sql.SQLException {
         return getDao(Book.class).queryForAll();
+    }
+
+    public List <Book> loadCheckedOutBooks (String name) throws java.sql.SQLException {
+        Member member = getDao(Member.class).queryBuilder().where().eq("name", name).queryForFirst();
+        int memberId = member.getId();
+
+
+        return getDao(Book.class).queryBuilder().where().eq("checkedout", true).and().eq("checkedoutby", memberId).query();
     }
 
 }
